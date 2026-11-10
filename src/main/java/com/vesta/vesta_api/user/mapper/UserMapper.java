@@ -1,0 +1,24 @@
+package com.vesta.vesta_api.user.mapper;
+
+import com.vesta.vesta_api.user.dto.SignUpDTO;
+import com.vesta.vesta_api.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.user.model.User;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserMapper {
+
+    public User toEntity(SignUpDTO signUpDTO) {
+        return User.builder()
+                .name(signUpDTO.name())
+                .email(signUpDTO.email())
+                .password(signUpDTO.password())
+                .build();
+    }
+
+    public UserResponseDTO toSignUpResponseDto(User userEntity) {
+        return new UserResponseDTO(userEntity.getId(),
+                userEntity.getName(),
+                userEntity.getEmail());
+    }
+}

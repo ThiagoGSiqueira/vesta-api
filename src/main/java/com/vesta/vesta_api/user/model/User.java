@@ -5,6 +5,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Getter
 
 @Entity
 @Table(name = "users")
@@ -30,4 +36,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "A role não pode ser vazia.")
     private UserRole role;
+
+    @Builder
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = UserRole.ROLE_USER;
+    }
+
 }
