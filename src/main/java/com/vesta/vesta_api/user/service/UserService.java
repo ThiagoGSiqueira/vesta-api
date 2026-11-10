@@ -7,6 +7,7 @@ import com.vesta.vesta_api.user.model.User;
 import com.vesta.vesta_api.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -16,10 +17,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponseDTO signUp(SignUpDTO request) {
-        User userEntity = userMapper.toEntity(request);
+        User userEntity = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
 
         userRepository.save(userEntity);
 

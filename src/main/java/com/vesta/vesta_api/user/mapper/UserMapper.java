@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public User toEntity(SignUpDTO signUpDTO) {
+    public User toEntity(SignUpDTO signUpDTO, String encryptedPassword) {
         return User.builder()
                 .name(signUpDTO.name())
                 .email(signUpDTO.email())
-                .password(signUpDTO.password())
+                .password(encryptedPassword)
                 .build();
     }
 
