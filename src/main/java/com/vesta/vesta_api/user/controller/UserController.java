@@ -1,5 +1,7 @@
 package com.vesta.vesta_api.user.controller;
 
+import com.vesta.vesta_api.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.user.dto.SignInDTO;
 import com.vesta.vesta_api.user.dto.SignUpDTO;
 import com.vesta.vesta_api.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.user.service.UserService;
@@ -23,5 +25,11 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> signUp(@Valid @RequestBody SignUpDTO request) {
         UserResponseDTO response = userService.signUp(request);
         return ResponseEntity.status(201).body(response);
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<AuthResponseDTO> signIn(@Valid @RequestBody SignInDTO request) {
+        AuthResponseDTO response = userService.signIn(request);
+        return ResponseEntity.ok(response);
     }
 }

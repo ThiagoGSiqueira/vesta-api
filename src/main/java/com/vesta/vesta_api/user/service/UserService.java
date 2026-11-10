@@ -1,5 +1,7 @@
 package com.vesta.vesta_api.user.service;
 
+import com.vesta.vesta_api.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.user.dto.SignInDTO;
 import com.vesta.vesta_api.user.dto.SignUpDTO;
 import com.vesta.vesta_api.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.user.mapper.UserMapper;
@@ -26,5 +28,15 @@ public class UserService {
         userRepository.save(userEntity);
 
         return userMapper.toSignUpResponseDto(userEntity);
+    }
+
+    @Transactional
+    public AuthResponseDTO signIn(SignInDTO request) {
+        User userEntity = userRepository.findByEmail(request.email()).orElseThrow();
+
+        if (passwordEncoder.matches(request.password(), userEntity.getPassword())) {
+            return new AuthResponseDTO(userEntity.getId(), userEntity.getName(), userEntity.getEmail(), "tokenteste");
+        }
+        return null;
     }
 }
