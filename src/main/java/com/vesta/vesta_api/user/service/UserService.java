@@ -2,6 +2,7 @@ package com.vesta.vesta_api.user.service;
 
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.exception.InvalidCredentialsException;
+import com.vesta.vesta_api.security.TokenService;
 import com.vesta.vesta_api.user.dto.AuthResponseDTO;
 import com.vesta.vesta_api.user.dto.SignInDTO;
 import com.vesta.vesta_api.user.dto.SignUpDTO;
@@ -22,6 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     @Transactional
     public UserResponseDTO signUp(SignUpDTO request) {
@@ -42,11 +44,12 @@ public class UserService {
         if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
             throw new InvalidCredentialsException("Email ou senha incorretos.");
         }
+
         return new AuthResponseDTO(
                 userEntity.getId(),
                 userEntity.getName(),
                 userEntity.getEmail(),
-                "tokenteste"
+                tokenService.generateToken(userEntity)
         );
     }
 }
