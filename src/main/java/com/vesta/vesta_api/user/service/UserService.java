@@ -1,6 +1,7 @@
 package com.vesta.vesta_api.user.service;
 
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
+import com.vesta.vesta_api.exception.InvalidCredentialsException;
 import com.vesta.vesta_api.user.dto.AuthResponseDTO;
 import com.vesta.vesta_api.user.dto.SignInDTO;
 import com.vesta.vesta_api.user.dto.SignUpDTO;
@@ -24,7 +25,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO signUp(SignUpDTO request) {
-        if(userRepository.existsByEmail(request.email())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Email já existente.");
         }
         User userEntity = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
@@ -36,11 +37,16 @@ public class UserService {
 
     @Transactional
     public AuthResponseDTO signIn(SignInDTO request) {
-        User userEntity = userRepository.findByEmail(request.email()).orElseThrow();
+        User userEntity = userRepository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Email ou senha incorretos."));
 
-        if (passwordEncoder.matches(request.password(), userEntity.getPassword())) {
-            return new AuthResponseDTO(userEntity.getId(), userEntity.getName(), userEntity.getEmail(), "tokenteste");
+        if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
+            throw new InvalidCredentialsException("Email ou senha incorretos.");
         }
-        return null;
+        return new AuthResponseDTO(
+                userEntity.getId(),
+                userEntity.getName(),
+                userEntity.getEmail(),
+                "tokenteste"
+        );
     }
 }
