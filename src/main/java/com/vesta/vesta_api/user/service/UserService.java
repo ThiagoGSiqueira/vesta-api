@@ -1,5 +1,6 @@
 package com.vesta.vesta_api.user.service;
 
+import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.user.dto.AuthResponseDTO;
 import com.vesta.vesta_api.user.dto.SignInDTO;
 import com.vesta.vesta_api.user.dto.SignUpDTO;
@@ -23,6 +24,9 @@ public class UserService {
 
     @Transactional
     public UserResponseDTO signUp(SignUpDTO request) {
+        if(userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email já existente.");
+        }
         User userEntity = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
 
         userRepository.save(userEntity);
