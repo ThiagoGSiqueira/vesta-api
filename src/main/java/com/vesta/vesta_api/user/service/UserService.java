@@ -45,11 +45,6 @@ public class UserService {
             throw new InvalidCredentialsException("Email ou senha incorretos.");
         }
 
-        return new AuthResponseDTO(
-                userEntity.getId(),
-                userEntity.getName(),
-                userEntity.getEmail(),
-                tokenService.generateToken(userEntity)
-        );
+        return userMapper.toSignInResponseDto(userEntity, tokenService.generateToken(userEntity));
     }
 }
