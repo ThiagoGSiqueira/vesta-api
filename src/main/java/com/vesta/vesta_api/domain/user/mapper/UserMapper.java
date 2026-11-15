@@ -1,9 +1,9 @@
-package com.vesta.vesta_api.user.mapper;
+package com.vesta.vesta_api.domain.user.mapper;
 
-import com.vesta.vesta_api.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.user.dto.SignUpDTO;
-import com.vesta.vesta_api.user.dto.UserResponseDTO;
-import com.vesta.vesta_api.user.model.User;
+import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
+import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.model.User;
 import org.springframework.stereotype.Component;
 
 @Component

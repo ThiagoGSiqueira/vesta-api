@@ -1,10 +1,10 @@
-package com.vesta.vesta_api.user.controller;
+package com.vesta.vesta_api.domain.user.controller;
 
-import com.vesta.vesta_api.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.user.dto.SignInDTO;
-import com.vesta.vesta_api.user.dto.SignUpDTO;
-import com.vesta.vesta_api.user.dto.UserResponseDTO;
-import com.vesta.vesta_api.user.service.UserService;
+import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.SignInDTO;
+import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
+import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.vesta.vesta_api.user.model;
+package com.vesta.vesta_api.domain.user.model;
 
 public enum UserRole {
     ROLE_USER,

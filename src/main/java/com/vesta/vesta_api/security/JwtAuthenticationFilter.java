@@ -1,6 +1,6 @@
 package com.vesta.vesta_api.security;
 
-import com.vesta.vesta_api.user.repository.UserRepository;
+import com.vesta.vesta_api.domain.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

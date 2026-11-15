@@ -1,15 +1,15 @@
-package com.vesta.vesta_api.user.service;
+package com.vesta.vesta_api.domain.user.service;
 
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.exception.InvalidCredentialsException;
 import com.vesta.vesta_api.security.TokenService;
-import com.vesta.vesta_api.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.user.dto.SignInDTO;
-import com.vesta.vesta_api.user.dto.SignUpDTO;
-import com.vesta.vesta_api.user.dto.UserResponseDTO;
-import com.vesta.vesta_api.user.mapper.UserMapper;
-import com.vesta.vesta_api.user.model.User;
-import com.vesta.vesta_api.user.repository.UserRepository;
+import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.SignInDTO;
+import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
+import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.mapper.UserMapper;
+import com.vesta.vesta_api.domain.user.model.User;
+import com.vesta.vesta_api.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

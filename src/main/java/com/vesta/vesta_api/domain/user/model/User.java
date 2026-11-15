@@ -1,4 +1,4 @@
-package com.vesta.vesta_api.user.model;
+package com.vesta.vesta_api.domain.user.model;
 
 import jakarta.persistence.*;
 import lombok.Builder;

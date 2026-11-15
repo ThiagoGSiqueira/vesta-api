@@ -1,6 +1,6 @@
 package com.vesta.vesta_api.security;
 
-import com.vesta.vesta_api.user.model.User;
+import com.vesta.vesta_api.domain.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
