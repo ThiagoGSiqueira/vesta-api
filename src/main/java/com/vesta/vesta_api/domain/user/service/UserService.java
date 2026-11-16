@@ -40,7 +40,6 @@ public class UserService {
     @Transactional
     public AuthResponseDTO signIn(SignInDTO request) {
         User userEntity = userRepository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Email ou senha incorretos."));
-
         if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
             throw new InvalidCredentialsException("Email ou senha incorretos.");
         }
@@ -48,3 +47,4 @@ public class UserService {
         return userMapper.toSignInResponseDto(userEntity, tokenService.generateToken(userEntity));
     }
 }
+

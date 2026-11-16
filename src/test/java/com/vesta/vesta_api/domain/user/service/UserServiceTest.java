@@ -29,6 +29,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
+    private static final String EMAIL = "test@test.com";
+
     @Mock
     private UserRepository userRepository;
 
@@ -113,5 +115,21 @@ public class UserServiceTest {
 
         assertEquals("Email ou senha incorretos.", e.getMessage());
         verifyNoInteractions(passwordEncoder);
+    }
+
+    @Test
+    void shouldThrowInvalidCredentialsExceptionWhenPasswordNotMatches() {
+        String rawPassword = "test123";
+        String encodedPassword = "encodedPassword";
+        SignInDTO request = new SignInDTO(EMAIL, rawPassword);
+
+
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(
+                User.builder().name("Test").email(EMAIL).password(encodedPassword).build()
+        ));
+        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
+
+        assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
+
     }
 }
