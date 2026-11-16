@@ -8,6 +8,7 @@ import com.vesta.vesta_api.domain.user.mapper.UserMapper;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.repository.UserRepository;
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
+import com.vesta.vesta_api.exception.InvalidCredentialsException;
 import com.vesta.vesta_api.security.TokenService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -100,5 +101,17 @@ public class UserServiceTest {
         assertEquals("Thiago", response.name());
         assertEquals("thiago@gmail.com", response.email());
         assertEquals("false-jwt-token", response.token());
+    }
+
+    @Test
+    void shouldThrowInvalidCredentialsExceptionWhenUserNotFound() {
+        SignInDTO request = new SignInDTO("thiago@gmail.com", "thiago123");
+
+        when(userRepository.findByEmail("thiago@gmail.com")).thenReturn(Optional.empty());
+
+        InvalidCredentialsException e = assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
+
+        assertEquals("Email ou senha incorretos.", e.getMessage());
+        verifyNoInteractions(passwordEncoder);
     }
 }
