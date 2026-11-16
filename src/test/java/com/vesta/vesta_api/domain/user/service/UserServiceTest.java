@@ -29,7 +29,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
+    private static final String USERNAME = "Test";
     private static final String EMAIL = "test@test.com";
+    private static final String PASSWORD = "test";
+    private static final String ENCODED_PASSWORD = "encodedPassword";
 
     @Mock
     private UserRepository userRepository;
@@ -48,9 +51,9 @@ public class UserServiceTest {
 
     @Test
     void shouldReturnSignUpResponseDTO() {
-        SignUpDTO request = new SignUpDTO("Thiago", "thiago@gmail.com", "thiago123");
+        SignUpDTO request = new SignUpDTO(USERNAME, EMAIL, PASSWORD);
 
-        when(passwordEncoder.encode("thiago123")).thenReturn("EncryptedPassword");
+        when(passwordEncoder.encode(PASSWORD)).thenReturn(ENCODED_PASSWORD);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User user = invocation.getArgument(0);
             ReflectionTestUtils.setField(user, "id", 1L);
@@ -61,17 +64,17 @@ public class UserServiceTest {
 
         assertNotNull(response);
         assertEquals(1L, response.id());
-        assertEquals("Thiago", response.name());
-        assertEquals("thiago@gmail.com", response.email());
+        assertEquals(USERNAME, response.name());
+        assertEquals(EMAIL, response.email());
         verify(userRepository).save(any(User.class));
         verify(passwordEncoder).encode(anyString());
     }
 
     @Test
     void shouldThrowEmailAlreadyExistsException() {
-        SignUpDTO request = new SignUpDTO("isabele", "isabele@gmail.com", "isabele123");
+        SignUpDTO request = new SignUpDTO(USERNAME, EMAIL, PASSWORD);
 
-        when(userRepository.existsByEmail("isabele@gmail.com")).thenReturn(true);
+        when(userRepository.existsByEmail(EMAIL)).thenReturn(true);
 
         EmailAlreadyExistsException e = assertThrows(EmailAlreadyExistsException.class, () -> userService.signUp(request));
         assertEquals("Email já existente.", e.getMessage());
@@ -80,36 +83,37 @@ public class UserServiceTest {
 
     @Test
     void shouldReturnAuthResponseDTO() {
-        SignInDTO request = new SignInDTO("thiago@gmail.com", "thiago123");
+        SignInDTO request = new SignInDTO(EMAIL, PASSWORD);
+        String token = "false-jwt-token";
 
-        when(userRepository.findByEmail("thiago@gmail.com")).thenAnswer(invocation -> {
-            User user = User.builder().name("Thiago").
-                    email("thiago@gmail.com").
-                    password("encryptedPassword").
+        when(userRepository.findByEmail(EMAIL)).thenAnswer(invocation -> {
+            User user = User.builder().name(USERNAME).
+                    email(EMAIL).
+                    password(ENCODED_PASSWORD).
                     build();
             ReflectionTestUtils.setField(user, "id", 1L);
 
             return Optional.of(user);
         });
 
-        when(tokenService.generateToken(any(User.class))).thenReturn("false-jwt-token");
-        when(passwordEncoder.matches("thiago123", "encryptedPassword")).thenReturn(true);
+        when(tokenService.generateToken(any(User.class))).thenReturn(token);
+        when(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(true);
 
 
         AuthResponseDTO response = userService.signIn(request);
 
-        verify(userRepository).findByEmail("thiago@gmail.com");
+        verify(userRepository).findByEmail(EMAIL);
         assertEquals(1L, response.id());
-        assertEquals("Thiago", response.name());
-        assertEquals("thiago@gmail.com", response.email());
-        assertEquals("false-jwt-token", response.token());
+        assertEquals(USERNAME, response.name());
+        assertEquals(EMAIL, response.email());
+        assertEquals(token, response.token());
     }
 
     @Test
     void shouldThrowInvalidCredentialsExceptionWhenUserNotFound() {
-        SignInDTO request = new SignInDTO("thiago@gmail.com", "thiago123");
+        SignInDTO request = new SignInDTO(EMAIL, PASSWORD);
 
-        when(userRepository.findByEmail("thiago@gmail.com")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.empty());
 
         InvalidCredentialsException e = assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
 
@@ -119,15 +123,13 @@ public class UserServiceTest {
 
     @Test
     void shouldThrowInvalidCredentialsExceptionWhenPasswordNotMatches() {
-        String rawPassword = "test123";
-        String encodedPassword = "encodedPassword";
-        SignInDTO request = new SignInDTO(EMAIL, rawPassword);
+        SignInDTO request = new SignInDTO(EMAIL, PASSWORD);
 
 
         when(userRepository.findByEmail(EMAIL)).thenReturn(Optional.of(
-                User.builder().name("Test").email(EMAIL).password(encodedPassword).build()
+                User.builder().name(USERNAME).email(EMAIL).password(ENCODED_PASSWORD).build()
         ));
-        when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(false);
+        when(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(false);
 
         assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
 
