@@ -5,8 +5,8 @@ import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.domain.user.mapper.UserMapper;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.repository.UserRepository;
+import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.security.TokenService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -52,13 +52,22 @@ public class UserServiceTest {
 
         UserResponseDTO response = userService.signUp(request);
 
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(1L, response.id());
-        Assertions.assertEquals("Thiago", response.name());
-        Assertions.assertEquals("thiago@gmail.com", response.email());
+        assertNotNull(response);
+        assertEquals(1L, response.id());
+        assertEquals("Thiago", response.name());
+        assertEquals("thiago@gmail.com", response.email());
         verify(userRepository).save(any(User.class));
         verify(passwordEncoder).encode(anyString());
     }
 
+    @Test
+    void shouldThrowEmailAlreadyExistsException() {
+        SignUpDTO request = new SignUpDTO("isabele", "isabele@gmail.com", "isabele123");
 
+        when(userRepository.existsByEmail("isabele@gmail.com")).thenReturn(true);
+
+        EmailAlreadyExistsException e = assertThrows(EmailAlreadyExistsException.class, () -> userService.signUp(request));
+        assertEquals("Email já existente.", e.getMessage());
+        verify(userRepository, never()).save(any(User.class));
+    }
 }
