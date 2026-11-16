@@ -1,5 +1,7 @@
 package com.vesta.vesta_api.domain.user.service;
 
+import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.SignInDTO;
 import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
 import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.domain.user.mapper.UserMapper;
@@ -15,6 +17,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,5 +73,32 @@ public class UserServiceTest {
         EmailAlreadyExistsException e = assertThrows(EmailAlreadyExistsException.class, () -> userService.signUp(request));
         assertEquals("Email já existente.", e.getMessage());
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void shouldReturnAuthResponseDTO() {
+        SignInDTO request = new SignInDTO("thiago@gmail.com", "thiago123");
+
+        when(userRepository.findByEmail("thiago@gmail.com")).thenAnswer(invocation -> {
+            User user = User.builder().name("Thiago").
+                    email("thiago@gmail.com").
+                    password("encryptedPassword").
+                    build();
+            ReflectionTestUtils.setField(user, "id", 1L);
+
+            return Optional.of(user);
+        });
+
+        when(tokenService.generateToken(any(User.class))).thenReturn("false-jwt-token");
+        when(passwordEncoder.matches("thiago123", "encryptedPassword")).thenReturn(true);
+
+
+        AuthResponseDTO response = userService.signIn(request);
+
+        verify(userRepository).findByEmail("thiago@gmail.com");
+        assertEquals(1L, response.id());
+        assertEquals("Thiago", response.name());
+        assertEquals("thiago@gmail.com", response.email());
+        assertEquals("false-jwt-token", response.token());
     }
 }
