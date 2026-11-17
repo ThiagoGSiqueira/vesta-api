@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 
 @Service
@@ -25,5 +27,12 @@ public class EventService {
         eventRepository.save(eventEntity);
 
         return eventMapper.toResponseDto(eventEntity);
+    }
+
+    @Transactional
+    public List<EventResponseDTO> getAllByUser(User user) {
+        List<Event> events = eventRepository.findAllByUser(user);
+
+        return events.stream().map(eventMapper::toResponseDto).toList();
     }
 }
