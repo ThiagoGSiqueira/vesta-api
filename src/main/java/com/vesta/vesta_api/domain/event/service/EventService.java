@@ -6,9 +6,9 @@ import com.vesta.vesta_api.domain.event.mapper.EventMapper;
 import com.vesta.vesta_api.domain.event.model.Event;
 import com.vesta.vesta_api.domain.event.repository.EventRepository;
 import com.vesta.vesta_api.domain.user.model.User;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,10 +29,18 @@ public class EventService {
         return eventMapper.toResponseDto(eventEntity);
     }
 
-    @Transactional
-    public List<EventResponseDTO> getAllByUser(User user) {
+    @Transactional(readOnly = true)
+    public EventResponseDTO getById(Long id, User user) {
+        Event eventEntity = eventRepository.findByIdAndUser(id, user);
+        return eventMapper.toResponseDto(eventEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventResponseDTO> getAll(User user) {
         List<Event> events = eventRepository.findAllByUser(user);
 
         return events.stream().map(eventMapper::toResponseDto).toList();
     }
+
+
 }

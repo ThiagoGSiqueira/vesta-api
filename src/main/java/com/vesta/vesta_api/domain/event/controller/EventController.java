@@ -26,9 +26,15 @@ public class EventController {
         return ResponseEntity.status(201).body(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EventResponseDTO> getById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        EventResponseDTO response = eventService.getById(id, user);
+        return ResponseEntity.ok(response);
+     }
+
     @GetMapping
-    public ResponseEntity<List<EventResponseDTO>> getAllByUser(@AuthenticationPrincipal User user) {
-        List<EventResponseDTO> response = eventService.getAllByUser(user);
+    public ResponseEntity<List<EventResponseDTO>> getAll(@AuthenticationPrincipal User user) {
+        List<EventResponseDTO> response = eventService.getAll(user);
         return ResponseEntity.ok(response);
     }
 }
