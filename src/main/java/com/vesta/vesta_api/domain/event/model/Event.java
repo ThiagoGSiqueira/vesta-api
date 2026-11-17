@@ -1,11 +1,17 @@
 package com.vesta.vesta_api.domain.event.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.vesta.vesta_api.domain.user.model.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+@NoArgsConstructor
+@Getter
 
 @Entity
 @Table(name = "events")
@@ -15,8 +21,9 @@ public class Event {
     private Long id;
 
     @Column(nullable = false, length = 100)
-    private String name;
+    private String clientName;
 
+    @PositiveOrZero
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalPrice;
 
@@ -36,4 +43,15 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EventStatus status;
+
+    @Builder
+    public Event(String clientName, User user, String contact, LocalDate scheduledDate) {
+        this.clientName = clientName;
+        this.totalPrice = BigDecimal.ZERO;
+        this.user = user;
+        this.contact = contact;
+        this.contactLink = "wa.me/" + contact;
+        this.scheduledDate = scheduledDate;
+        this.status = EventStatus.QUOTE;
+    }
 }
