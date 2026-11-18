@@ -54,4 +54,18 @@ public class Event {
         this.scheduledDate = scheduledDate;
         this.status = EventStatus.QUOTE;
     }
+
+    public void renameClient(String name) {
+        this.clientName = name;
+    }
+
+    public void changeContact(String contact) {
+        this.contact = contact;
+        this.contactLink = "wa.me/" + contact;
+    }
+
+    public void reschedule(LocalDate scheduledDate) {
+        this.scheduledDate = scheduledDate;
+    }
+
 }

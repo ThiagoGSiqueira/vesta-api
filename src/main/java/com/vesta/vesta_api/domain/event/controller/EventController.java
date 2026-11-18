@@ -2,6 +2,7 @@ package com.vesta.vesta_api.domain.event.controller;
 
 import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
+import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.service.EventService;
 import com.vesta.vesta_api.domain.user.model.User;
 import jakarta.validation.Valid;
@@ -35,6 +36,12 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventResponseDTO>> getAll(@AuthenticationPrincipal User user) {
         List<EventResponseDTO> response = eventService.getAll(user);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}/update")
+    public ResponseEntity<EventResponseDTO> update(@PathVariable Long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateDTO request) {
+        EventResponseDTO response = eventService.update(id, user, request);
         return ResponseEntity.ok(response);
     }
 }
