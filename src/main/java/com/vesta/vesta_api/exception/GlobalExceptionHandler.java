@@ -65,4 +65,13 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
         return pd;
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail resourceNotFoundException(ResourceNotFoundException e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        pd.setType(URI.create("about:blank"));
+        pd.setProperty("code", "RESOURCE_NOT_FOUND");
+        log.error(e.getMessage());
+        return pd;
+    }
 }
