@@ -1,6 +1,7 @@
 package com.vesta.vesta_api.domain.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,6 +15,7 @@ public record CreateEventDTO(
         @NotBlank(message = "Contato do cliente não deve ser vazio.")
         @Size(min = 11, max = 20, message = "O contato deve conter entre 11 e 20 caracteres.")
         String contact,
+        @FutureOrPresent(message = "Data deve ser no presente ou futuro.")
         @NotNull(message = "Data de agendamento não deve ser vazia.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
         LocalDate scheduledDate) {
