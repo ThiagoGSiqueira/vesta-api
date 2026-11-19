@@ -1,6 +1,7 @@
 package com.vesta.vesta_api.domain.event.model;
 
 import com.vesta.vesta_api.domain.user.model.User;
+import com.vesta.vesta_api.exception.InvalidContactException;
 import com.vesta.vesta_api.exception.InvalidDateException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -50,6 +51,7 @@ public class Event {
         this.clientName = clientName;
         this.totalPrice = BigDecimal.ZERO;
         this.user = user;
+        validateContactPattern(contact);
         this.contact = contact;
         this.contactLink = "wa.me/" + contact;
         validateScheduledDate(scheduledDate);
@@ -65,6 +67,7 @@ public class Event {
 
     public void changeContact(String contact) {
         if (contact != null && !contact.isBlank()) {
+            validateContactPattern(contact);
             this.contact = contact;
             this.contactLink = "wa.me/" + contact;
         }
@@ -79,10 +82,19 @@ public class Event {
 
     private void validateScheduledDate(LocalDate scheduledDate) {
         if (scheduledDate == null) {
-            throw new InvalidDateException("A data não pode ser nula");
+            throw new InvalidDateException("A data não pode ser nula.");
         }
         if (scheduledDate.isBefore(LocalDate.now())) {
             throw new InvalidDateException("A data não pode ser no passado.");
+        }
+    }
+
+    private void validateContactPattern(String contact) {
+        if(contact == null) {
+            throw new InvalidContactException("O contato não pode ser nulo.");
+        }
+        if(!contact.matches("^[0-9]+$")) {
+            throw new InvalidContactException("O contato deve conter apenas números");
         }
     }
 }
