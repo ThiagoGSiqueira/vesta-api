@@ -56,16 +56,21 @@ public class Event {
     }
 
     public void renameClient(String name) {
-        this.clientName = name;
+        if (name != null && !name.isBlank()) {
+            this.clientName = name;
+        }
     }
 
     public void changeContact(String contact) {
-        this.contact = contact;
-        this.contactLink = "wa.me/" + contact;
+        if (contact != null && !contact.isBlank()) {
+            this.contact = contact;
+            this.contactLink = "wa.me/" + contact;
+        }
     }
 
     public void reschedule(LocalDate scheduledDate) {
-        this.scheduledDate = scheduledDate;
+        if (scheduledDate != null) {
+            this.scheduledDate = scheduledDate;
+        }
     }
-
 }

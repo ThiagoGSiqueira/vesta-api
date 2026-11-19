@@ -25,9 +25,7 @@ public class EventService {
     @Transactional
     public EventResponseDTO createEvent(CreateEventDTO request, User user) {
         Event eventEntity = eventMapper.toEntity(request, user);
-
         eventRepository.save(eventEntity);
-
         return eventMapper.toResponseDto(eventEntity);
     }
 
@@ -40,7 +38,6 @@ public class EventService {
     @Transactional(readOnly = true)
     public List<EventResponseDTO> getAll(User user) {
         List<Event> events = eventRepository.findAllByUser(user);
-
         return events.stream().map(eventMapper::toResponseDto).toList();
     }
 
@@ -48,24 +45,16 @@ public class EventService {
     public EventResponseDTO update(Long id, User user, EventUpdateDTO request) {
         Event eventEntity = this.findByIdAndUser(id, user);
 
-        if(request.clientName() != null && !request.clientName().isBlank()) {
-            eventEntity.renameClient(request.clientName());
-        }
-
-        if(request.contact() != null && !request.contact().isBlank()) {
-            eventEntity.changeContact(request.contact());
-        }
-
-        if(request.scheduledDate() != null) {
-            eventEntity.reschedule(request.scheduledDate());
-        }
+        eventEntity.renameClient(request.clientName());
+        eventEntity.changeContact(request.contact());
+        eventEntity.reschedule(request.scheduledDate());
 
         eventRepository.save(eventEntity);
-
         return eventMapper.toResponseDto(eventEntity);
     }
 
     private Event findByIdAndUser(Long id, User user) {
-        return eventRepository.findByIdAndUser(id, user).orElseThrow(() -> new ResourceNotFoundException("Event not found."));
+        return eventRepository.findByIdAndUser(id, user).
+                orElseThrow(() -> new ResourceNotFoundException("Event não encontrado."));
     }
 }
