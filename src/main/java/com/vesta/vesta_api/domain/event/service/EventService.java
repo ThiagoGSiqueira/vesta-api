@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -55,6 +56,6 @@ public class EventService {
 
     private Event findByIdAndUser(Long id, User user) {
         return eventRepository.findByIdAndUser(id, user).
-                orElseThrow(() -> new ResourceNotFoundException("Event não encontrado."));
+                orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado."));
     }
 }

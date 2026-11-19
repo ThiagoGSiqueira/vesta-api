@@ -74,4 +74,13 @@ public class GlobalExceptionHandler {
         log.error(e.getMessage());
         return pd;
     }
+
+    @ExceptionHandler(InvalidDateException.class)
+    public ProblemDetail invalidDateException(InvalidDateException e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        pd.setType(URI.create("about:blank"));
+        pd.setProperty("code", "INVALID_DATE");
+        log.error(e.getMessage());
+        return pd;
+    }
 }

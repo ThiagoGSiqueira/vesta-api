@@ -1,6 +1,7 @@
 package com.vesta.vesta_api.domain.event.model;
 
 import com.vesta.vesta_api.domain.user.model.User;
+import com.vesta.vesta_api.exception.InvalidDateException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
@@ -51,6 +52,7 @@ public class Event {
         this.user = user;
         this.contact = contact;
         this.contactLink = "wa.me/" + contact;
+        validateScheduledDate(scheduledDate);
         this.scheduledDate = scheduledDate;
         this.status = EventStatus.QUOTE;
     }
@@ -70,7 +72,17 @@ public class Event {
 
     public void reschedule(LocalDate scheduledDate) {
         if (scheduledDate != null) {
+            validateScheduledDate(scheduledDate);
             this.scheduledDate = scheduledDate;
+        }
+    }
+
+    private void validateScheduledDate(LocalDate scheduledDate) {
+        if (scheduledDate == null) {
+            throw new InvalidDateException("A data não pode ser nula");
+        }
+        if (scheduledDate.isBefore(LocalDate.now())) {
+            throw new InvalidDateException("A data não pode ser no passado.");
         }
     }
 }
