@@ -9,6 +9,7 @@ import com.vesta.vesta_api.domain.event.service.EventService;
 import com.vesta.vesta_api.domain.user.model.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class EventController {
     @PostMapping
     public ResponseEntity<EventResponseDTO> createEvent(@Valid @RequestBody CreateEventDTO request, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.createEvent(request, user);
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
@@ -35,7 +36,7 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<EventResponseDTO>> getAll(@RequestParam(defaultValue = "true") boolean active,
                                                          @RequestParam(required = false) EventStatus status,
                                                          @AuthenticationPrincipal User user) {
@@ -57,7 +58,7 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable long id, @AuthenticationPrincipal User user, @RequestBody EventUpdateStatusDTO request) {
+    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateStatusDTO request) {
         EventResponseDTO response = eventService.changeStatus(id, user, request);
         return ResponseEntity.ok(response);
     }
