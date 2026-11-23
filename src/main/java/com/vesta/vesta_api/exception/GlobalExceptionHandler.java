@@ -75,11 +75,11 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
-    @ExceptionHandler(InvalidDateException.class)
-    public ProblemDetail invalidDateException(InvalidDateException e) {
+    @ExceptionHandler(BusinessRuleException.class)
+    public ProblemDetail businessRuleException(BusinessRuleException e) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         pd.setType(URI.create("about:blank"));
-        pd.setProperty("code", "INVALID_DATE");
+        pd.setProperty("code", "INVALID_FIELD");
         log.error(e.getMessage());
         return pd;
     }

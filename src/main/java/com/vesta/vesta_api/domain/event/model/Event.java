@@ -1,8 +1,7 @@
 package com.vesta.vesta_api.domain.event.model;
 
 import com.vesta.vesta_api.domain.user.model.User;
-import com.vesta.vesta_api.exception.InvalidContactException;
-import com.vesta.vesta_api.exception.InvalidDateException;
+import com.vesta.vesta_api.exception.BusinessRuleException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
@@ -82,19 +81,19 @@ public class Event {
 
     private void validateScheduledDate(LocalDate scheduledDate) {
         if (scheduledDate == null) {
-            throw new InvalidDateException("A data não pode ser nula.");
+            throw new BusinessRuleException("A data não pode ser nula.");
         }
         if (scheduledDate.isBefore(LocalDate.now())) {
-            throw new InvalidDateException("A data não pode ser no passado.");
+            throw new BusinessRuleException("A data não pode ser no passado.");
         }
     }
 
     private void validateContactPattern(String contact) {
         if(contact == null) {
-            throw new InvalidContactException("O contato não pode ser nulo.");
+            throw new BusinessRuleException("O contato não pode ser nulo.");
         }
         if(!contact.matches("^[0-9]+$")) {
-            throw new InvalidContactException("O contato deve conter apenas números");
+            throw new BusinessRuleException("O contato deve conter apenas números");
         }
     }
 }
