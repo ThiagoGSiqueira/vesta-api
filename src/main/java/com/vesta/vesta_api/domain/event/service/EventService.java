@@ -38,14 +38,13 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAllNotCanceled(User user) {
-        List<Event> events = eventRepository.findAllByUserAndStatusNot(user, EventStatus.CANCELED);
-        return events.stream().map(eventMapper::toResponseDto).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAll(User user) {
-        List<Event> events = eventRepository.findAllByUser(user);
+    public List<EventResponseDTO> getAll(User user, boolean active) {
+        List<Event> events;
+        if (active) {
+            events = eventRepository.findAllByUserAndStatusNot(user, EventStatus.CANCELED);
+        } else {
+            events = eventRepository.findAllByUser(user);
+        }
         return events.stream().map(eventMapper::toResponseDto).toList();
     }
 

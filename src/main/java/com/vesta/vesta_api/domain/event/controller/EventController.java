@@ -34,15 +34,9 @@ public class EventController {
         return ResponseEntity.ok(response);
      }
 
-     @GetMapping("/active")
-     public ResponseEntity<List<EventResponseDTO>> getAllNotCanceled(@AuthenticationPrincipal User user) {
-        List<EventResponseDTO> response = eventService.getAllNotCanceled(user);
-        return ResponseEntity.ok(response);
-     }
-
-    @GetMapping
-    public ResponseEntity<List<EventResponseDTO>> getAll(@AuthenticationPrincipal User user) {
-        List<EventResponseDTO> response = eventService.getAll(user);
+    @GetMapping()
+    public ResponseEntity<List<EventResponseDTO>> getAll(@RequestParam(defaultValue = "true") boolean active, @AuthenticationPrincipal User user) {
+        List<EventResponseDTO> response = eventService.getAll(user, active);
         return ResponseEntity.ok(response);
     }
 
@@ -51,6 +45,8 @@ public class EventController {
         EventResponseDTO response = eventService.update(id, user, request);
         return ResponseEntity.ok(response);
     }
+
+
 
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
