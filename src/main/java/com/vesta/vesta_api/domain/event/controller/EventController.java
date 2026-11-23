@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 
-@RequestMapping("api/v1/event")
+@RequestMapping("api/v1/events")
 @RestController
 public class EventController {
 
@@ -44,20 +44,20 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{id}/update")
+    @PatchMapping("/{id}")
     public ResponseEntity<EventResponseDTO> update(@PathVariable Long id, @Valid @RequestBody EventUpdateDTO request, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.update(id, request, user);
         return ResponseEntity.ok(response);
     }
 
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
         eventService.delete(id, user);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{id}")
     public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable Long id, @Valid @RequestBody EventUpdateStatusDTO request, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.changeStatus(id, request, user);
         return ResponseEntity.ok(response);
