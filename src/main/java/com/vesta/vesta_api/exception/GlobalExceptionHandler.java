@@ -1,6 +1,8 @@
 package com.vesta.vesta_api.exception;
 
+import com.vesta.vesta_api.domain.event.model.EventStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.json.JsonParseException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -9,6 +11,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import tools.jackson.core.exc.StreamReadException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
 import java.net.URI;
 import java.util.List;
@@ -21,10 +25,18 @@ public class GlobalExceptionHandler {
     public ProblemDetail httpMessageNotReadableException(HttpMessageNotReadableException e) {
         Throwable cause = e.getCause();
 
-        if (cause instanceof tools.jackson.core.exc.StreamReadException) {
+        if (cause instanceof StreamReadException) {
             ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "O formato do JSON enviado está incorreto ou possui erros de sintaxe");
             pd.setType(URI.create("about:blank"));
             pd.setProperty("code", "MALFORMED_JSON");
+            log.error(e.getMessage());
+            return pd;
+        }
+
+        if (cause instanceof InvalidFormatException invalidFormat && invalidFormat.getTargetType().equals(EventStatus.class)) {
+            ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "O status enviado não existe. (QUOTE, CONFIRMED, COMPLETED, CANCELED.)");
+            pd.setType(URI.create("about:blank"));
+            pd.setProperty("code", "JSON_PARSER_ERROR");
             log.error(e.getMessage());
             return pd;
         }
