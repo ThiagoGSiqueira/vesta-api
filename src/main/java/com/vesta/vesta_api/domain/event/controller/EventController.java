@@ -1,6 +1,6 @@
 package com.vesta.vesta_api.domain.event.controller;
 
-import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
+import com.vesta.vesta_api.domain.event.dto.EventCreateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
@@ -25,7 +25,7 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping
-    public ResponseEntity<EventResponseDTO> createEvent(@Valid @RequestBody CreateEventDTO request, @AuthenticationPrincipal User user) {
+    public ResponseEntity<EventResponseDTO> create(@Valid @RequestBody EventCreateDTO request, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.createEvent(request, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -58,7 +58,7 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateStatusDTO request) {
+    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable Long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateStatusDTO request) {
         EventResponseDTO response = eventService.changeStatus(id, user, request);
         return ResponseEntity.ok(response);
     }

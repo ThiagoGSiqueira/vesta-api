@@ -1,6 +1,6 @@
 package com.vesta.vesta_api.domain.event.service;
 
-import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
+import com.vesta.vesta_api.domain.event.dto.EventCreateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
@@ -25,7 +25,7 @@ public class EventService {
     private final EventMapper eventMapper;
 
     @Transactional
-    public EventResponseDTO createEvent(CreateEventDTO request, User user) {
+    public EventResponseDTO createEvent(EventCreateDTO request, User user) {
         Event eventEntity = eventMapper.toEntity(request, user);
         eventRepository.save(eventEntity);
         return eventMapper.toResponseDto(eventEntity);
