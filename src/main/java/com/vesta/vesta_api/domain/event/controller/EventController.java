@@ -4,6 +4,7 @@ import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
+import com.vesta.vesta_api.domain.event.model.EventStatus;
 import com.vesta.vesta_api.domain.event.service.EventService;
 import com.vesta.vesta_api.domain.user.model.User;
 import jakarta.validation.Valid;
@@ -32,11 +33,13 @@ public class EventController {
     public ResponseEntity<EventResponseDTO> getById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.getById(id, user);
         return ResponseEntity.ok(response);
-     }
+    }
 
     @GetMapping()
-    public ResponseEntity<List<EventResponseDTO>> getAll(@RequestParam(defaultValue = "true") boolean active, @AuthenticationPrincipal User user) {
-        List<EventResponseDTO> response = eventService.getAll(user, active);
+    public ResponseEntity<List<EventResponseDTO>> getAll(@RequestParam(defaultValue = "true") boolean active,
+                                                         @RequestParam(required = false) EventStatus status,
+                                                         @AuthenticationPrincipal User user) {
+        List<EventResponseDTO> response = eventService.getAll(user, active, status);
         return ResponseEntity.ok(response);
     }
 
@@ -45,7 +48,6 @@ public class EventController {
         EventResponseDTO response = eventService.update(id, user, request);
         return ResponseEntity.ok(response);
     }
-
 
 
     @DeleteMapping("/{id}/delete")

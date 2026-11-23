@@ -38,13 +38,17 @@ public class EventService {
     }
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAll(User user, boolean active) {
+    public List<EventResponseDTO> getAll(User user, boolean active, EventStatus status) {
         List<Event> events;
-        if (active) {
+
+        if(status != null) {
+            events = eventRepository.findAllByUserAndStatus(user, status);
+        } else if (active) {
             events = eventRepository.findAllByUserAndStatusNot(user, EventStatus.CANCELED);
         } else {
             events = eventRepository.findAllByUser(user);
         }
+
         return events.stream().map(eventMapper::toResponseDto).toList();
     }
 
