@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,6 +51,12 @@ public class EventService {
 
         eventRepository.save(eventEntity);
         return eventMapper.toResponseDto(eventEntity);
+    }
+
+    @Transactional
+    public void delete(Long id, User user) {
+        Event event = findByIdAndUser(id, user);
+        event.delete();
     }
 
     private Event findByIdAndUser(Long id, User user) {

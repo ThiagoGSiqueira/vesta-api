@@ -7,13 +7,16 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
 
+@SQLRestriction("deleted_at IS NULL")
 @Entity
 @Table(name = "events")
 public class Event {
@@ -44,6 +47,8 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EventStatus status;
+
+    private LocalDateTime deletedAt = null;
 
     @Builder
     public Event(String clientName, User user, String contact, LocalDate scheduledDate) {
@@ -77,6 +82,10 @@ public class Event {
             validateScheduledDate(scheduledDate);
             this.scheduledDate = scheduledDate;
         }
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     private String createContactLink(String contact) {
