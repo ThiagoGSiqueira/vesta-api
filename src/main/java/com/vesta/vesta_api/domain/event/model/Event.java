@@ -88,6 +88,10 @@ public class Event {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public void changeStatus(EventStatus status) {
+        this.status = status;
+    }
+
     private String createContactLink(String contact) {
         return "wa.me/" + contact;
     }

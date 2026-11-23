@@ -3,6 +3,7 @@ package com.vesta.vesta_api.domain.event.service;
 import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
+import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
 import com.vesta.vesta_api.domain.event.mapper.EventMapper;
 import com.vesta.vesta_api.domain.event.model.Event;
 import com.vesta.vesta_api.domain.event.repository.EventRepository;
@@ -57,6 +58,13 @@ public class EventService {
     public void delete(Long id, User user) {
         Event event = findByIdAndUser(id, user);
         event.delete();
+    }
+
+    @Transactional
+    public EventResponseDTO changeStatus(Long id, User user, EventUpdateStatusDTO request) {
+        Event eventEntity = findByIdAndUser(id, user);
+        eventEntity.changeStatus(request.status());
+        return eventMapper.toResponseDto(eventEntity);
     }
 
     private Event findByIdAndUser(Long id, User user) {

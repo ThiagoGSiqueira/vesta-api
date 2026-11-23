@@ -3,6 +3,7 @@ package com.vesta.vesta_api.domain.event.controller;
 import com.vesta.vesta_api.domain.event.dto.CreateEventDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
+import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
 import com.vesta.vesta_api.domain.event.service.EventService;
 import com.vesta.vesta_api.domain.user.model.User;
 import jakarta.validation.Valid;
@@ -49,5 +50,11 @@ public class EventController {
     public ResponseEntity<Void> delete(@PathVariable Long id, @AuthenticationPrincipal User user) {
         eventService.delete(id, user);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable long id, @AuthenticationPrincipal User user, @RequestBody EventUpdateStatusDTO request) {
+        EventResponseDTO response = eventService.changeStatus(id, user, request);
+        return ResponseEntity.ok(response);
     }
 }
