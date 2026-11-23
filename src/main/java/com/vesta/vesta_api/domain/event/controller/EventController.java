@@ -45,8 +45,8 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/update")
-    public ResponseEntity<EventResponseDTO> update(@PathVariable Long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateDTO request) {
-        EventResponseDTO response = eventService.update(id, user, request);
+    public ResponseEntity<EventResponseDTO> update(@PathVariable Long id, @Valid @RequestBody EventUpdateDTO request, @AuthenticationPrincipal User user) {
+        EventResponseDTO response = eventService.update(id, request, user);
         return ResponseEntity.ok(response);
     }
 
@@ -58,8 +58,8 @@ public class EventController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable Long id, @AuthenticationPrincipal User user, @Valid @RequestBody EventUpdateStatusDTO request) {
-        EventResponseDTO response = eventService.changeStatus(id, user, request);
+    public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable Long id, @Valid @RequestBody EventUpdateStatusDTO request, @AuthenticationPrincipal User user) {
+        EventResponseDTO response = eventService.changeStatus(id, request, user);
         return ResponseEntity.ok(response);
     }
 }

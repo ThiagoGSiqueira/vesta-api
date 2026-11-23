@@ -53,7 +53,7 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponseDTO update(Long id, User user, EventUpdateDTO request) {
+    public EventResponseDTO update(Long id, EventUpdateDTO request, User user) {
         Event eventEntity = this.findByIdAndUser(id, user);
 
         eventEntity.renameClient(request.clientName());
@@ -71,7 +71,7 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponseDTO changeStatus(Long id, User user, EventUpdateStatusDTO request) {
+    public EventResponseDTO changeStatus(Long id, EventUpdateStatusDTO request, User user) {
         Event eventEntity = findByIdAndUser(id, user);
         eventEntity.changeStatus(request.status());
         return eventMapper.toResponseDto(eventEntity);
