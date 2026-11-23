@@ -34,6 +34,12 @@ public class EventController {
         return ResponseEntity.ok(response);
      }
 
+     @GetMapping("/active")
+     public ResponseEntity<List<EventResponseDTO>> getAllNotCanceled(@AuthenticationPrincipal User user) {
+        List<EventResponseDTO> response = eventService.getAllNotCanceled(user);
+        return ResponseEntity.ok(response);
+     }
+
     @GetMapping
     public ResponseEntity<List<EventResponseDTO>> getAll(@AuthenticationPrincipal User user) {
         List<EventResponseDTO> response = eventService.getAll(user);

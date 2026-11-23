@@ -6,6 +6,7 @@ import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
 import com.vesta.vesta_api.domain.event.mapper.EventMapper;
 import com.vesta.vesta_api.domain.event.model.Event;
+import com.vesta.vesta_api.domain.event.model.EventStatus;
 import com.vesta.vesta_api.domain.event.repository.EventRepository;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.exception.ResourceNotFoundException;
@@ -34,6 +35,12 @@ public class EventService {
     public EventResponseDTO getById(Long id, User user) {
         Event eventEntity = this.findByIdAndUser(id, user);
         return eventMapper.toResponseDto(eventEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventResponseDTO> getAllNotCanceled(User user) {
+        List<Event> events = eventRepository.findAllByUserAndStatusNot(user, EventStatus.CANCELED);
+        return events.stream().map(eventMapper::toResponseDto).toList();
     }
 
     @Transactional(readOnly = true)
