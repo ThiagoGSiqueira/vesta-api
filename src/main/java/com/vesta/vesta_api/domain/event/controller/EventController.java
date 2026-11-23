@@ -40,7 +40,7 @@ public class EventController {
     public ResponseEntity<List<EventResponseDTO>> getAll(@RequestParam(defaultValue = "true") boolean active,
                                                          @RequestParam(required = false) EventStatus status,
                                                          @AuthenticationPrincipal User user) {
-        List<EventResponseDTO> response = eventService.getAll(user, active, status);
+        List<EventResponseDTO> response = eventService.getAll(active, status, user);
         return ResponseEntity.ok(response);
     }
 

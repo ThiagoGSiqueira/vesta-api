@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
-
 @Service
 public class EventService {
 
@@ -33,12 +32,12 @@ public class EventService {
 
     @Transactional(readOnly = true)
     public EventResponseDTO getById(Long id, User user) {
-        Event eventEntity = this.findByIdAndUser(id, user);
+        Event eventEntity = findByIdAndUser(id, user);
         return eventMapper.toResponseDto(eventEntity);
     }
 
     @Transactional(readOnly = true)
-    public List<EventResponseDTO> getAll(User user, boolean active, EventStatus status) {
+    public List<EventResponseDTO> getAll(boolean active, EventStatus status, User user) {
         List<Event> events;
 
         if(status != null) {
@@ -54,13 +53,12 @@ public class EventService {
 
     @Transactional
     public EventResponseDTO update(Long id, EventUpdateDTO request, User user) {
-        Event eventEntity = this.findByIdAndUser(id, user);
+        Event eventEntity = findByIdAndUser(id, user);
 
         eventEntity.renameClient(request.clientName());
         eventEntity.changeContact(request.contact());
         eventEntity.reschedule(request.scheduledDate());
 
-        eventRepository.save(eventEntity);
         return eventMapper.toResponseDto(eventEntity);
     }
 
