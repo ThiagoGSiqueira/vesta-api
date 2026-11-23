@@ -52,7 +52,7 @@ public class Event {
         this.user = user;
         validateContactPattern(contact);
         this.contact = contact;
-        this.contactLink = "wa.me/" + contact;
+        this.contactLink = createContactLink(contact);
         validateScheduledDate(scheduledDate);
         this.scheduledDate = scheduledDate;
         this.status = EventStatus.QUOTE;
@@ -68,7 +68,7 @@ public class Event {
         if (contact != null && !contact.isBlank()) {
             validateContactPattern(contact);
             this.contact = contact;
-            this.contactLink = "wa.me/" + contact;
+            this.contactLink = createContactLink(contact);
         }
     }
 
@@ -77,6 +77,10 @@ public class Event {
             validateScheduledDate(scheduledDate);
             this.scheduledDate = scheduledDate;
         }
+    }
+
+    private String createContactLink(String contact) {
+        return "wa.me/" + contact;
     }
 
     private void validateScheduledDate(LocalDate scheduledDate) {
