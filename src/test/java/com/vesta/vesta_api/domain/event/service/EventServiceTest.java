@@ -122,4 +122,18 @@ public class EventServiceTest {
         assertEquals(1, response.size());
         assertEquals(CLIENT_NAME, response.getFirst().clientName());
     }
+
+    @Test
+    void shouldReturnAllEvents() {
+        Event firstEvent = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event secondEvent = Event.builder().clientName(CLIENT_NAME + "2").user(USER).contact(CONTACT + 2).scheduledDate(SCHEDULED_DATE.plusDays(3)).build();
+
+        when(eventRepository.findAllByUser(USER)).thenReturn(List.of(firstEvent, secondEvent));
+
+        List<EventResponseDTO> response = eventService.getAll(false, null, USER);
+
+        assertEquals(2, response.size());
+        assertEquals(CLIENT_NAME, response.get(0).clientName());
+        assertEquals(CLIENT_NAME + 2, response.get(1).clientName());
+    }
 }
