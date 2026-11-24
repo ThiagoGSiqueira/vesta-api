@@ -10,10 +10,10 @@ import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.domain.user.mapper.UserMapper;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 
