@@ -57,7 +57,7 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/status")
     public ResponseEntity<EventResponseDTO> changeStatus(@PathVariable Long id, @Valid @RequestBody EventUpdateStatusDTO request, @AuthenticationPrincipal User user) {
         EventResponseDTO response = eventService.changeStatus(id, request, user);
         return ResponseEntity.ok(response);
