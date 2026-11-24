@@ -8,6 +8,7 @@ import com.vesta.vesta_api.domain.event.model.EventStatus;
 import com.vesta.vesta_api.domain.event.repository.EventRepository;
 import com.vesta.vesta_api.domain.event.service.EventService;
 import com.vesta.vesta_api.domain.user.model.User;
+import com.vesta.vesta_api.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -19,8 +20,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -70,7 +70,6 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnEventResponseDTO() {
-        //AAA (Preparar, Agir, Verificar)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         User user = User.builder().name("userTest").email("test@gmail.com").password("test").build();
         Event event = Event.builder().clientName("clientTest").user(user).contact("00000000000").scheduledDate(LocalDate.parse("01/01/2027", formatter)).build();
@@ -85,5 +84,18 @@ public class EventServiceTest {
         assertEquals("wa.me/00000000000", response.contactLink());
         assertEquals(BigDecimal.ZERO, response.totalPrice());
         assertEquals(EventStatus.QUOTE, response.status());
+    }
+
+    @Test
+    void shouldThrowResourceNotFoundExceptionWhenEventDoesNotExist() {
+        User user = User.builder().name("userTest").email("test@gmail.com").password("test").build();
+
+        when(eventRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
+            eventService.getById(1L, user)
+        );
+
+        assertEquals("Evento não encontrado.", e.getMessage());
     }
 }
