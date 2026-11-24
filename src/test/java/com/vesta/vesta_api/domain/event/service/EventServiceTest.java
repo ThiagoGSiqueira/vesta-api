@@ -3,6 +3,7 @@ package com.vesta.vesta_api.domain.event.service;
 import com.vesta.vesta_api.domain.event.dto.EventCreateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
 import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
+import com.vesta.vesta_api.domain.event.dto.EventUpdateStatusDTO;
 import com.vesta.vesta_api.domain.event.mapper.EventMapper;
 import com.vesta.vesta_api.domain.event.model.Event;
 import com.vesta.vesta_api.domain.event.model.EventStatus;
@@ -182,6 +183,31 @@ public class EventServiceTest {
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
                 eventService.delete(1L, USER)
+        );
+
+        assertEquals("Evento não encontrado.", e.getMessage());
+    }
+
+    @Test
+    void shouldChangeStatus() {
+        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        EventUpdateStatusDTO request = new EventUpdateStatusDTO(EventStatus.CONFIRMED);
+
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
+
+        EventResponseDTO response = eventService.changeStatus(1L, request, USER);
+
+        assertEquals(EventStatus.CONFIRMED, response.status());
+    }
+
+    @Test
+    void shouldThrowResourceNotFoundExceptionWhenEventDoesNotExistOnChangeStatus() {
+        EventUpdateStatusDTO request = new EventUpdateStatusDTO(EventStatus.CONFIRMED);
+
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
+                eventService.changeStatus(1L, request, USER)
         );
 
         assertEquals("Evento não encontrado.", e.getMessage());
