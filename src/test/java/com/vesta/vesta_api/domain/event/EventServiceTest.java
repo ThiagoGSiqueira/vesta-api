@@ -17,10 +17,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +42,7 @@ public class EventServiceTest {
     private EventService eventService;
 
     @Test
-    void shouldReturnEventResponseDTO() {
+    void shouldCreateEvent() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         EventCreateDTO request = new EventCreateDTO("clientTest", "00000000000", LocalDate.parse("01/01/2027", formatter));
         User user = User.builder().name("userTest").email("test@gmail.com").password("test").build();
@@ -64,5 +66,24 @@ public class EventServiceTest {
         verify(eventRepository).save(eventCaptor.capture());
         Event eventSaved = eventCaptor.getValue();
         assertEquals(user.getEmail(), eventSaved.getUser().getEmail());
+    }
+
+    @Test
+    void shouldReturnEventResponseDTO() {
+        //AAA (Preparar, Agir, Verificar)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        User user = User.builder().name("userTest").email("test@gmail.com").password("test").build();
+        Event event = Event.builder().clientName("clientTest").user(user).contact("00000000000").scheduledDate(LocalDate.parse("01/01/2027", formatter)).build();
+        ReflectionTestUtils.setField(event, "id", 1L);
+
+        when(eventRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(event));
+
+        EventResponseDTO response = eventService.getById(event.getId(), user);
+
+        assertNotNull(response);
+        assertEquals(1L, response.id());
+        assertEquals("wa.me/00000000000", response.contactLink());
+        assertEquals(BigDecimal.ZERO, response.totalPrice());
+        assertEquals(EventStatus.QUOTE, response.status());
     }
 }
