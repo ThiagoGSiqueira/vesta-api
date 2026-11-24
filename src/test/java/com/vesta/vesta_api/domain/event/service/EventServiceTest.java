@@ -2,6 +2,7 @@ package com.vesta.vesta_api.domain.event.service;
 
 import com.vesta.vesta_api.domain.event.dto.EventCreateDTO;
 import com.vesta.vesta_api.domain.event.dto.EventResponseDTO;
+import com.vesta.vesta_api.domain.event.dto.EventUpdateDTO;
 import com.vesta.vesta_api.domain.event.mapper.EventMapper;
 import com.vesta.vesta_api.domain.event.model.Event;
 import com.vesta.vesta_api.domain.event.model.EventStatus;
@@ -135,5 +136,19 @@ public class EventServiceTest {
         assertEquals(2, response.size());
         assertEquals(CLIENT_NAME, response.get(0).clientName());
         assertEquals(CLIENT_NAME + 2, response.get(1).clientName());
+    }
+
+    @Test
+    void shouldUpdateEvent() {
+        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        EventUpdateDTO request = new EventUpdateDTO("NewName", null, SCHEDULED_DATE.plusYears(2));
+
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
+
+        EventResponseDTO response = eventService.update(1L, request, USER);
+
+        assertEquals("NewName", response.clientName());
+        assertEquals(CONTACT, response.contact());
+        assertEquals(SCHEDULED_DATE.plusYears(2), response.scheduledDate());
     }
 }
