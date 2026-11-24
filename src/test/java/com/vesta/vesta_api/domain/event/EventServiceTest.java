@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,9 +94,25 @@ public class EventServiceTest {
         when(eventRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
-            eventService.getById(1L, user)
+                eventService.getById(1L, user)
         );
 
         assertEquals("Evento não encontrado.", e.getMessage());
+    }
+
+    @Test
+    void shouldReturnEventsByStatus() {
+        User user = User.builder().name("userTest").email("test@gmail.com").password("test").build();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        Event event = Event.builder().clientName("clientTest").user(user).contact("00000000000").scheduledDate(LocalDate.parse("01/01/2027", formatter)).build();
+        Event event1 = Event.builder().clientName("clientTest1").user(user).contact("11111111111").scheduledDate(LocalDate.parse("01/01/2028", formatter)).build();
+
+        when(eventRepository.findAllByUserAndStatus(user, EventStatus.QUOTE)).thenReturn(List.of(event, event1));
+
+        List<EventResponseDTO> response = eventService.getAll(false, EventStatus.QUOTE, user);
+
+        assertEquals(2, response.size());
+        assertEquals("clientTest", response.get(0).clientName());
+        assertEquals("clientTest1", response.get(1).clientName());
     }
 }
