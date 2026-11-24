@@ -34,7 +34,7 @@ public class EventServiceTest {
     private static final User USER = User.builder().name("userTest").email("test@gmail.com").password("test").build();
     private static final String CLIENT_NAME = "clientTest";
     private static final String CONTACT = "12345678900";
-    private static final LocalDate SCHEDULED_DATE = LocalDate.parse("01/01/2027", FORMATTER);
+    private static final LocalDate SCHEDULED_DATE = LocalDate.parse(LocalDate.now().plusDays(30).toString(), FORMATTER);
 
     @Captor
     private ArgumentCaptor<Event> eventCaptor;
