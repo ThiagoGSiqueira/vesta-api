@@ -131,7 +131,7 @@ public class UserServiceTest {
         ));
         when(passwordEncoder.matches(PASSWORD, ENCODED_PASSWORD)).thenReturn(false);
 
-        assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
-
+        InvalidCredentialsException e = assertThrows(InvalidCredentialsException.class, () -> userService.signIn(request));
+        assertEquals("Email ou senha incorretos.", e.getMessage());
     }
 }
