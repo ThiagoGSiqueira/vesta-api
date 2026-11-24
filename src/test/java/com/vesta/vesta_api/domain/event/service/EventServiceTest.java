@@ -69,7 +69,7 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnEventResponseDTO() {
-        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event event = buildEvent();
         ReflectionTestUtils.setField(event, "id", 1L);
 
         when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
@@ -96,8 +96,9 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnEventsByStatus() {
-        Event firstEvent = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
-        Event secondEvent = Event.builder().clientName(CLIENT_NAME + "2").user(USER).contact(CONTACT + 2).scheduledDate(SCHEDULED_DATE.plusDays(3)).build();
+        Event firstEvent = buildEvent();
+        Event secondEvent = buildEvent();
+        ReflectionTestUtils.setField(secondEvent, "clientName", "clientTest2");
 
         when(eventRepository.findAllByUserAndStatus(USER, EventStatus.QUOTE)).thenReturn(List.of(firstEvent, secondEvent));
 
@@ -110,7 +111,7 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnAllEventsWhereStatusNotCanceled() {
-        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event event = buildEvent();
 
         when(eventRepository.findAllByUserAndStatusNot(USER, EventStatus.CANCELED)).thenReturn(List.of(event));
 
@@ -123,7 +124,8 @@ public class EventServiceTest {
     @Test
     void shouldReturnAllEvents() {
         Event firstEvent = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
-        Event secondEvent = Event.builder().clientName(CLIENT_NAME + "2").user(USER).contact(CONTACT + 2).scheduledDate(SCHEDULED_DATE.plusDays(3)).build();
+        Event secondEvent = buildEvent();
+        ReflectionTestUtils.setField(secondEvent, "clientName", "clientTest2");
 
         when(eventRepository.findAllByUser(USER)).thenReturn(List.of(firstEvent, secondEvent));
 
@@ -136,7 +138,7 @@ public class EventServiceTest {
 
     @Test
     void shouldUpdateEvent() {
-        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event event = buildEvent();
         EventUpdateDTO request = new EventUpdateDTO("NewName", null, SCHEDULED_DATE.plusYears(2));
 
         when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
@@ -163,7 +165,7 @@ public class EventServiceTest {
 
     @Test
     void shouldDeleteEvent() {
-        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event event = buildEvent();
 
         when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
 
@@ -185,7 +187,7 @@ public class EventServiceTest {
 
     @Test
     void shouldChangeStatus() {
-        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+        Event event = buildEvent();
         EventUpdateStatusDTO request = new EventUpdateStatusDTO(EventStatus.CONFIRMED);
 
         when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
@@ -206,5 +208,9 @@ public class EventServiceTest {
         );
 
         assertEquals("Evento não encontrado.", e.getMessage());
+    }
+
+    private Event buildEvent() {
+        return Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
     }
 }
