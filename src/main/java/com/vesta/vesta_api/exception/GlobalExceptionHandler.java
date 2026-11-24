@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ProblemDetail invalidCredentialsException(InvalidCredentialsException e) {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
         pd.setType(URI.create("about:blank"));
         pd.setProperty("code", "INVALID_CREDENTIALS");
         log.error(e.getMessage());
