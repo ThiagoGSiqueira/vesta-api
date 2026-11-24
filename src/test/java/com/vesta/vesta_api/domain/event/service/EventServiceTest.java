@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -75,7 +74,7 @@ public class EventServiceTest {
         Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
         ReflectionTestUtils.setField(event, "id", 1L);
 
-        when(eventRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.of(event));
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
 
         EventResponseDTO response = eventService.getById(event.getId(), USER);
 
@@ -88,7 +87,7 @@ public class EventServiceTest {
 
     @Test
     void shouldThrowResourceNotFoundExceptionWhenEventDoesNotExist() {
-        when(eventRepository.findByIdAndUser(anyLong(), any(User.class))).thenReturn(Optional.empty());
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.empty());
 
         ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
                 eventService.getById(1L, USER)
