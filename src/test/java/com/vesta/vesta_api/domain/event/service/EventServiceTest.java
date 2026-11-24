@@ -151,4 +151,17 @@ public class EventServiceTest {
         assertEquals(CONTACT, response.contact());
         assertEquals(SCHEDULED_DATE.plusYears(2), response.scheduledDate());
     }
+
+    @Test
+    void shouldThrowResourceNotFoundExceptionWhenEventDoesNotExistOnUpdate() {
+        EventUpdateDTO request = new EventUpdateDTO("NewName", null, SCHEDULED_DATE.plusYears(2));
+
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
+                eventService.update(1L, request, USER)
+        );
+
+        assertEquals("Evento não encontrado.", e.getMessage());
+    }
 }
