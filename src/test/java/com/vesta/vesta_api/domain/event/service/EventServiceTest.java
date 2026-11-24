@@ -164,4 +164,26 @@ public class EventServiceTest {
 
         assertEquals("Evento não encontrado.", e.getMessage());
     }
+
+    @Test
+    void shouldDeleteEvent() {
+        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
+
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.of(event));
+
+        eventService.delete(1L, USER);
+
+        assertNotNull(event.getDeletedAt());
+    }
+
+    @Test
+    void shouldThrowResourceNotFoundExceptionWhenEventDoesNotExistOnDelete() {
+        when(eventRepository.findByIdAndUser(1L, USER)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException e = assertThrows(ResourceNotFoundException.class, () ->
+                eventService.delete(1L, USER)
+        );
+
+        assertEquals("Evento não encontrado.", e.getMessage());
+    }
 }
