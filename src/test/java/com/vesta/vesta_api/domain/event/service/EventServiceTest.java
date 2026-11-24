@@ -18,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +29,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class EventServiceTest {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final User USER = User.builder().name("userTest").email("test@gmail.com").password("test").build();
     private static final String CLIENT_NAME = "clientTest";
     private static final String CONTACT = "12345678900";
-    private static final LocalDate SCHEDULED_DATE = LocalDate.parse(LocalDate.now().plusDays(30).toString(), FORMATTER);
+    private static final LocalDate SCHEDULED_DATE = LocalDate.now().plusDays(30);
 
     @Captor
     private ArgumentCaptor<Event> eventCaptor;
@@ -112,11 +110,9 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnAllEventsWhereStatusNotCanceled() {
-        Event firstEvent = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
-        Event secondEvent = Event.builder().clientName(CLIENT_NAME + "2").user(USER).contact(CONTACT + 2).scheduledDate(SCHEDULED_DATE.plusDays(3)).build();
-        secondEvent.changeStatus(EventStatus.CANCELED);
+        Event event = Event.builder().clientName(CLIENT_NAME).user(USER).contact(CONTACT).scheduledDate(SCHEDULED_DATE).build();
 
-        when(eventRepository.findAllByUserAndStatusNot(USER, EventStatus.CANCELED)).thenReturn(List.of(firstEvent));
+        when(eventRepository.findAllByUserAndStatusNot(USER, EventStatus.CANCELED)).thenReturn(List.of(event));
 
         List<EventResponseDTO> response = eventService.getAll(true, null, USER);
 
