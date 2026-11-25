@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,6 +42,18 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.role = UserRole.ROLE_USER;
+    }
+
+    public void renameClient(@Nullable String name) {
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+    }
+
+    public void changeEmail(@Nullable String email) {
+        if(email != null && !email.isBlank()) {
+            this.email = email;
+        }
     }
 
     @Override

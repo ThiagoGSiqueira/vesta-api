@@ -1,14 +1,10 @@
 package com.vesta.vesta_api.domain.user.service;
 
-import com.vesta.vesta_api.domain.event.model.Event;
+import com.vesta.vesta_api.domain.user.dto.*;
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.exception.InvalidCredentialsException;
 import com.vesta.vesta_api.exception.ResourceNotFoundException;
 import com.vesta.vesta_api.security.TokenService;
-import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.domain.user.dto.SignInDTO;
-import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
-import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
 import com.vesta.vesta_api.domain.user.mapper.UserMapper;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.repository.UserRepository;
@@ -52,6 +48,15 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDTO getMe(Long id) {
         return userMapper.toResponseDto(findById(id));
+    }
+
+    @Transactional
+    public UserResponseDTO update(UserUpdateDTO request, Long id) {
+        User user = findById(id);
+
+        user.renameClient(request.name());
+        user.changeEmail(request.email());
+        return userMapper.toResponseDto(user);
     }
 
     private User findById(Long id) {

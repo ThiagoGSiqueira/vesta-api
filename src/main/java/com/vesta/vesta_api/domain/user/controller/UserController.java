@@ -1,9 +1,6 @@
 package com.vesta.vesta_api.domain.user.controller;
 
-import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.domain.user.dto.SignInDTO;
-import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
-import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.*;
 import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.service.UserService;
 import jakarta.validation.Valid;
@@ -36,5 +33,11 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getMe(@AuthenticationPrincipal User user) {
         UserResponseDTO response = userService.getMe(user.getId());
         return ResponseEntity.ok(response);
-     }
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponseDTO> update(@Valid @RequestBody UserUpdateDTO request, @AuthenticationPrincipal User user) {
+        UserResponseDTO response = userService.update(request, user.getId());
+        return ResponseEntity.ok(response);
+    }
 }
