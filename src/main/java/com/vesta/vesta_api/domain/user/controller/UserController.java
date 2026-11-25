@@ -4,14 +4,13 @@ import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
 import com.vesta.vesta_api.domain.user.dto.SignInDTO;
 import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
 import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 
@@ -32,4 +31,10 @@ public class UserController {
         AuthResponseDTO response = userService.signIn(request);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe(@AuthenticationPrincipal User user) {
+        UserResponseDTO response = userService.getMe(user.getId());
+        return ResponseEntity.ok(response);
+     }
 }

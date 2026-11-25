@@ -1,7 +1,9 @@
 package com.vesta.vesta_api.domain.user.service;
 
+import com.vesta.vesta_api.domain.event.model.Event;
 import com.vesta.vesta_api.exception.EmailAlreadyExistsException;
 import com.vesta.vesta_api.exception.InvalidCredentialsException;
+import com.vesta.vesta_api.exception.ResourceNotFoundException;
 import com.vesta.vesta_api.security.TokenService;
 import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
 import com.vesta.vesta_api.domain.user.dto.SignInDTO;
@@ -34,7 +36,7 @@ public class UserService {
 
         userRepository.save(userEntity);
 
-        return userMapper.toSignUpResponseDto(userEntity);
+        return userMapper.toResponseDto(userEntity);
     }
 
     @Transactional
@@ -46,5 +48,16 @@ public class UserService {
 
         return userMapper.toSignInResponseDto(userEntity, tokenService.generateToken(userEntity));
     }
+
+    @Transactional(readOnly = true)
+    public UserResponseDTO getMe(Long id) {
+        return userMapper.toResponseDto(findById(id));
+    }
+
+    private User findById(Long id) {
+        return userRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado."));
+    }
+
 }
 
