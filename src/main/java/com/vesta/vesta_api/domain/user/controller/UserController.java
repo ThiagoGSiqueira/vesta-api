@@ -5,6 +5,7 @@ import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +47,12 @@ public class UserController {
        userService.changePassword(request, user.getId());
 
        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal User user) {
+        userService.delete(user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

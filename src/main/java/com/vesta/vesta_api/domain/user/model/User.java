@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.List;
 @Getter
 
 @NullMarked
+@SQLRestriction("deleted_at IS NULL")
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -40,6 +43,10 @@ public class User implements UserDetails {
 
     @Nullable
     private Instant passwordChangedAt;
+
+    @Nullable
+    private LocalDateTime deletedAt;
+
 
     @Builder
     public User(String name, String email, String password) {
@@ -64,6 +71,10 @@ public class User implements UserDetails {
     public void changePassword(String encrpytedPassword) {
         this.password = encrpytedPassword;
         this.passwordChangedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     @Override
