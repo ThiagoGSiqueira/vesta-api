@@ -65,4 +65,8 @@ public class TokenService {
     public String getRoleFromToken(String token) {
         return extractClaims(token).get("role", String.class);
     }
+
+    public Instant getIssuedAtFromToken(String token) {
+        return extractClaims(token).getIssuedAt().toInstant();
+    }
 }

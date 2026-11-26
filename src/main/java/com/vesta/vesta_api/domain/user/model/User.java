@@ -10,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,6 +38,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Nullable
+    private Instant passwordChangedAt;
+
     @Builder
     public User(String name, String email, String password) {
         this.name = name;
@@ -54,6 +59,11 @@ public class User implements UserDetails {
         if(email != null && !email.isBlank()) {
             this.email = email;
         }
+    }
+
+    public void changePassword(String encrpytedPassword) {
+        this.password = encrpytedPassword;
+        this.passwordChangedAt = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override

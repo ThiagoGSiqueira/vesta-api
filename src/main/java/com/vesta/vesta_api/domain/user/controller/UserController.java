@@ -40,4 +40,11 @@ public class UserController {
         UserResponseDTO response = userService.update(request, user.getId());
         return ResponseEntity.ok(response);
     }
+
+    @PatchMapping("/me/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody UserChangePasswordDTO request, @AuthenticationPrincipal User user) {
+       userService.changePassword(request, user.getId());
+
+       return ResponseEntity.ok().build();
+    }
 }
