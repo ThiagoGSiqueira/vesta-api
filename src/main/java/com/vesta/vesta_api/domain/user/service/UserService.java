@@ -67,13 +67,13 @@ public class UserService {
         User user = findById(id);
 
         if (!Objects.equals(request.newPassword(), request.confirmPassword())) {
-            throw new BusinessRuleException("Nova senha é diferente da confirmação.");
+            throw new BusinessRuleException("A nova senha e a confirmação não coincidem.");
         }
         if (Objects.equals(request.newPassword(), request.currentPassword())) {
-            throw new BusinessRuleException("Nova senha é igual a antiga.");
+            throw new BusinessRuleException("A nova senha não pode ser igual à senha atual.");
         }
         if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
-            throw new BusinessRuleException("Senha passada está incorreta.");
+            throw new BusinessRuleException("A senha atual está incorreta.");
         } else {
             user.changePassword(passwordEncoder.encode(request.newPassword()));
         }
