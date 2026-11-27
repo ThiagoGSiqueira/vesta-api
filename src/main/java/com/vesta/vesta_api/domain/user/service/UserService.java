@@ -31,21 +31,21 @@ public class UserService {
         if (userRepository.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Email já existente.");
         }
-        User userEntity = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
+        User user = userMapper.toEntity(request, passwordEncoder.encode(request.password()));
 
-        userRepository.save(userEntity);
+        userRepository.save(user);
 
-        return userMapper.toResponseDto(userEntity);
+        return userMapper.toResponseDto(user);
     }
 
     @Transactional
     public AuthResponseDTO signIn(SignInDTO request) {
-        User userEntity = userRepository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Email ou senha incorretos."));
-        if (!passwordEncoder.matches(request.password(), userEntity.getPassword())) {
+        User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new InvalidCredentialsException("Email ou senha incorretos."));
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Email ou senha incorretos.");
         }
 
-        return userMapper.toSignInResponseDto(userEntity, tokenService.generateToken(userEntity));
+        return userMapper.toSignInResponseDto(user, tokenService.generateToken(user));
     }
 
     @Transactional(readOnly = true)
