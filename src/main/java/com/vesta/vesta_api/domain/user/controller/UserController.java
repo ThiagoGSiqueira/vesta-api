@@ -1,21 +1,18 @@
 package com.vesta.vesta_api.domain.user.controller;
 
-import com.vesta.vesta_api.domain.user.dto.AuthResponseDTO;
-import com.vesta.vesta_api.domain.user.dto.SignInDTO;
-import com.vesta.vesta_api.domain.user.dto.SignUpDTO;
-import com.vesta.vesta_api.domain.user.dto.UserResponseDTO;
+import com.vesta.vesta_api.domain.user.dto.*;
+import com.vesta.vesta_api.domain.user.model.User;
 import com.vesta.vesta_api.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/users")
 @RestController
 public class UserController {
 
@@ -31,5 +28,31 @@ public class UserController {
     public ResponseEntity<AuthResponseDTO> signIn(@Valid @RequestBody SignInDTO request) {
         AuthResponseDTO response = userService.signIn(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe(@AuthenticationPrincipal User user) {
+        UserResponseDTO response = userService.getMe(user.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponseDTO> update(@Valid @RequestBody UserUpdateDTO request, @AuthenticationPrincipal User user) {
+        UserResponseDTO response = userService.update(request, user.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/me/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody UserChangePasswordDTO request, @AuthenticationPrincipal User user) {
+       userService.changePassword(request, user.getId());
+
+       return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal User user) {
+        userService.delete(user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

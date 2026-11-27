@@ -17,7 +17,7 @@ public class UserMapper {
                 .build();
     }
 
-    public UserResponseDTO toSignUpResponseDto(User userEntity) {
+    public UserResponseDTO toResponseDto(User userEntity) {
         return new UserResponseDTO(userEntity.getId(),
                 userEntity.getName(),
                 userEntity.getEmail());
